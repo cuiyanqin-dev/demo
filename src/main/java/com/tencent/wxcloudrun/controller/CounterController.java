@@ -25,7 +25,7 @@ public class CounterController {
 
   final CounterService counterService;
   final Logger logger;
-
+  //test
   public CounterController(@Autowired CounterService counterService) {
     this.counterService = counterService;
     this.logger = LoggerFactory.getLogger(CounterController.class);
