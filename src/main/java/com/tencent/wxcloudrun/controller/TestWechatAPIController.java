@@ -1,6 +1,8 @@
 package com.tencent.wxcloudrun.controller;
 
 import com.tencent.wxcloudrun.config.ApiResponse;
+import com.tencent.wxcloudrun.dto.TemplateData;
+import com.tencent.wxcloudrun.dto.WxTemplate;
 import com.tencent.wxcloudrun.service.CounterService;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -12,12 +14,20 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * counter控制器
@@ -26,10 +36,9 @@ import java.io.IOException;
 
 public class TestWechatAPIController {
 
-
-    private static final CloseableHttpClient httpclient = HttpClients.createDefault();
-
     public static final String GET_USER_INFO_URL = "https://api.weixin.qq.com/cgi-bin/user/get";
+
+    public static final String SET_INDUSTRY = "https://api.weixin.qq.com/cgi-bin/template/api_set_industry";
 
     public static final String SEND_MESSAGE = "https://api.weixin.qq.com/cgi-bin/message/template/send";
 
@@ -48,21 +57,33 @@ public class TestWechatAPIController {
      * @return API response json
      */
     @PostMapping(value = "/api/cgi-bin/message/template/send")
-    ApiResponse sendTemplateMsg(@RequestBody String data) {
-        String result = sendMsg(data);
+    ApiResponse sendTemplateMsg(@RequestBody String openId,String template_id,String jumpurl) {
+        String result = sendMsg(openId,template_id,jumpurl);
         return ApiResponse.ok(result);
     }
 
-    public String sendMsg(String data) {
-        logger.info( SEND_MESSAGE + " get request");
+
+    public String sendMsg(String openId,String template_id,String jumpurl) {
+        RestTemplate restTemplate = new RestTemplate();
         String result = "";
-        HttpPost post = new HttpPost(SEND_MESSAGE);
-        StringEntity entity = new StringEntity(data,"utf-8");
-        post.setEntity(entity);
         try {
-            HttpEntity resultEntity = httpclient.execute(post).getEntity();
-            result = EntityUtils.toString(resultEntity);
-        } catch (IOException e) {
+            WxTemplate wxTemplate = new WxTemplate();
+            wxTemplate.setTouser(openId);
+            wxTemplate.setTemplate_id(template_id);
+            wxTemplate.setUrl("www.baidu.com");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            String dateString = dateFormat.format(new Date());
+
+            Map<String, TemplateData> m = new HashMap<>();
+            m.put("title", new TemplateData("测试推送：告警通知！","#F7A36F"));
+            m.put("content", new TemplateData("你的设备的内存资源发生了严重级别的告警，请尽快处理！！","#79CCE9"));
+            m.put("time", new TemplateData(dateString,"#79CCE9"));
+            m.put("remark", new TemplateData("智和网管平台告警通知","#FF0000"));
+            wxTemplate.setData(m);
+
+            ResponseEntity<String> responseEntity = restTemplate.postForEntity(SEND_MESSAGE, wxTemplate, String.class);
+            result = responseEntity.getBody();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
@@ -91,40 +112,27 @@ public class TestWechatAPIController {
 
 
     private String getTemplate() {
+        RestTemplate restTemplate = new RestTemplate();
         String result = "";
         try {
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(GET_TEMPLATE_INFO_URL,String.class);
             logger.info( GET_TEMPLATE_INFO_URL + " get request");
-            HttpGet httpGet = new HttpGet(GET_TEMPLATE_INFO_URL);
-            HttpEntity entity = httpclient.execute(httpGet).getEntity();
-            result = EntityUtils.toString(entity);
+            result = responseEntity.getBody();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
     }
 
-
-    private String sendTemplate() {
-        String result = "";
-        try {
-            logger.info( GET_TEMPLATE_INFO_URL + " get request");
-            HttpGet httpGet = new HttpGet(GET_TEMPLATE_INFO_URL);
-            HttpEntity entity = httpclient.execute(httpGet).getEntity();
-            result = EntityUtils.toString(entity);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
 
 
     private String getUserInfo() {
+        RestTemplate restTemplate = new RestTemplate();
         String result = "";
         try {
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(GET_USER_INFO_URL,String.class);
             logger.info( GET_USER_INFO_URL + " get request");
-            HttpGet httpGet = new HttpGet(GET_USER_INFO_URL);
-            HttpEntity entity = httpclient.execute(httpGet).getEntity();
-            result = EntityUtils.toString(entity);
+            result = responseEntity.getBody();
         } catch (Exception e) {
             e.printStackTrace();
         }
