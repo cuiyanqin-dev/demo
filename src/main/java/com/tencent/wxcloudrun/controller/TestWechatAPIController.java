@@ -76,7 +76,7 @@ public class TestWechatAPIController {
             String dateString = dateFormat.format(new Date());
 
             Map<String, TemplateData> m = new HashMap<>();
-            m.put("first", new TemplateData("设备告警通知：","#F7A36F"));
+            m.put("first", new TemplateData("设备告警通知（平台测试消息，无需处理）：","#F7A36F"));
             m.put("keyword1", new TemplateData("192.168.1.12","#79CCE9"));
             m.put("keyword2", new TemplateData("CPU使用率","#79CCE9"));
             m.put("keyword3", new TemplateData(">=90%","#79CCE9"));
