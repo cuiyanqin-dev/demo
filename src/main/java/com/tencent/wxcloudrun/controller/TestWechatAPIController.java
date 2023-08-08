@@ -71,15 +71,18 @@ public class TestWechatAPIController {
             WxTemplate wxTemplate = new WxTemplate();
             wxTemplate.setTouser(openId);
             wxTemplate.setTemplate_id(template_id);
-            wxTemplate.setUrl("www.baidu.com");
+            wxTemplate.setUrl(jumpurl);
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             String dateString = dateFormat.format(new Date());
 
             Map<String, TemplateData> m = new HashMap<>();
-            m.put("title", new TemplateData("测试推送：告警通知！","#F7A36F"));
-            m.put("content", new TemplateData("你的设备的内存资源发生了严重级别的告警，请尽快处理！！","#79CCE9"));
-            m.put("time", new TemplateData(dateString,"#79CCE9"));
-            m.put("remark", new TemplateData("智和网管平台告警通知","#FF0000"));
+            m.put("first", new TemplateData("设备告警通知：","#F7A36F"));
+            m.put("keyword1", new TemplateData("192.168.1.12","#79CCE9"));
+            m.put("keyword2", new TemplateData("CPU使用率","#79CCE9"));
+            m.put("keyword3", new TemplateData(">=90%","#79CCE9"));
+            m.put("keyword4", new TemplateData("93","#79CCE9"));
+            m.put("keyword4", new TemplateData(dateString,"#79CCE9"));
+            m.put("remark", new TemplateData("，请尽快登录系统进行处理！！！","#FF0000"));
             wxTemplate.setData(m);
 
             ResponseEntity<String> responseEntity = restTemplate.postForEntity(SEND_MESSAGE, wxTemplate, String.class);
