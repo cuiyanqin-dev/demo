@@ -1,6 +1,7 @@
 package com.tencent.wxcloudrun.controller;
 
 import com.tencent.wxcloudrun.config.ApiResponse;
+import com.tencent.wxcloudrun.dto.AlarmMsg;
 import com.tencent.wxcloudrun.dto.MessageParam;
 import com.tencent.wxcloudrun.dto.TemplateData;
 import com.tencent.wxcloudrun.dto.WxTemplate;
@@ -63,6 +64,46 @@ public class TestWechatAPIController {
         return ApiResponse.ok(result);
     }
 
+    /**
+     * 获取所有的粉丝用户列表
+     * @return API response json
+     */
+    @PostMapping(value = "/api/cgi-bin/message/template/send/alarm")
+    ApiResponse sendTemplateAlarmMsg(@RequestBody MessageParam messageParam) {
+        String result = sendAlarmMsg(messageParam.getOpenId(),messageParam.getTemplate_id(),messageParam.getJumpUrl(),messageParam.getData());
+        return ApiResponse.ok(result);
+    }
+
+
+    public String sendAlarmMsg(String openId, String template_id, String jumpurl, AlarmMsg alarmMsg) {
+        RestTemplate restTemplate = new RestTemplate();
+        String result = "";
+        try {
+            WxTemplate wxTemplate = new WxTemplate();
+            wxTemplate.setTouser(openId);
+            wxTemplate.setTemplate_id(template_id);
+            wxTemplate.setUrl(jumpurl);
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            String dateString = dateFormat.format(new Date());
+
+            Map<String, TemplateData> m = new HashMap<>();
+            m.put("first", new TemplateData(alarmMsg.getFirst(),"#F7A36F"));
+            m.put("keyword1", new TemplateData(alarmMsg.getKeyword1(),"#79CCE9"));
+            m.put("keyword2", new TemplateData(alarmMsg.getKeyword2(),"#79CCE9"));
+            m.put("keyword3", new TemplateData(alarmMsg.getKeyword3(),"#79CCE9"));
+            m.put("keyword4", new TemplateData(alarmMsg.getKeyword4(),"#79CCE9"));
+            m.put("keyword5", new TemplateData(alarmMsg.getKeyword5(),"#79CCE9"));
+            m.put("remark", new TemplateData(alarmMsg.getRemark(),"#FF0000"));
+            wxTemplate.setData(m);
+
+            ResponseEntity<String> responseEntity = restTemplate.postForEntity(SEND_MESSAGE, wxTemplate, String.class);
+            result = responseEntity.getBody();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 
     public String sendMsg(String openId,String template_id,String jumpurl) {
         RestTemplate restTemplate = new RestTemplate();
@@ -77,7 +118,7 @@ public class TestWechatAPIController {
 
             Map<String, TemplateData> m = new HashMap<>();
             m.put("first", new TemplateData("设备告警通知（平台测试消息，无需处理）：","#F7A36F"));
-            m.put("keyword1", new TemplateData("demo服务器（192.168.1.14）--测试数据，请勿回复","#79CCE9"));
+            m.put("keyword1", new TemplateData("demo服务器（192.168.1.14） --测试数据，请勿回复","#79CCE9"));
             m.put("keyword2", new TemplateData("CPU使用率","#79CCE9"));
             m.put("keyword3", new TemplateData(">=90%","#79CCE9"));
             m.put("keyword4", new TemplateData("93%","#79CCE9"));

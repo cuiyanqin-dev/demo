@@ -10,4 +10,6 @@ public class MessageParam {
     private String openId;
     private String template_id;
     private String jumpUrl;
+    private String first;
+    private AlarmMsg data;
 }
