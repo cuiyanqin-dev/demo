@@ -87,12 +87,12 @@ public class TestWechatAPIController {
             String dateString = dateFormat.format(new Date());
 
             Map<String, TemplateData> m = new HashMap<>();
-            m.put("first", new TemplateData(alarmMsg.getFirst(),"#F7A36F"));
-            m.put("keyword1", new TemplateData(alarmMsg.getKeyword1(),"#79CCE9"));
-            m.put("keyword2", new TemplateData(alarmMsg.getKeyword2(),"#79CCE9"));
-            m.put("keyword3", new TemplateData(alarmMsg.getKeyword3(),"#79CCE9"));
-            m.put("keyword4", new TemplateData(alarmMsg.getKeyword4(),"#79CCE9"));
-            m.put("keyword5", new TemplateData(alarmMsg.getKeyword5(),"#79CCE9"));
+            m.put("first", new TemplateData(alarmMsg.getTitle(),"#F7A36F"));
+            m.put("keyword1", new TemplateData(alarmMsg.getNodeName(),"#79CCE9"));
+            m.put("keyword2", new TemplateData(alarmMsg.getAlarmType(),"#79CCE9"));
+            m.put("keyword3", new TemplateData(alarmMsg.getConditioin(),"#79CCE9"));
+            m.put("keyword4", new TemplateData(alarmMsg.getMonitorValue(),"#79CCE9"));
+            m.put("keyword5", new TemplateData(alarmMsg.getMonitorTime(),"#79CCE9"));
             m.put("remark", new TemplateData(alarmMsg.getRemark(),"#FF0000"));
             wxTemplate.setData(m);
 
