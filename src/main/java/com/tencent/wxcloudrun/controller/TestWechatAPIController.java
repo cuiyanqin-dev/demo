@@ -1,6 +1,7 @@
 package com.tencent.wxcloudrun.controller;
 
 import com.tencent.wxcloudrun.config.ApiResponse;
+import com.tencent.wxcloudrun.dto.MessageParam;
 import com.tencent.wxcloudrun.dto.TemplateData;
 import com.tencent.wxcloudrun.dto.WxTemplate;
 import com.tencent.wxcloudrun.service.CounterService;
@@ -57,8 +58,8 @@ public class TestWechatAPIController {
      * @return API response json
      */
     @PostMapping(value = "/api/cgi-bin/message/template/send")
-    ApiResponse sendTemplateMsg(@RequestBody String openId,String template_id,String jumpurl) {
-        String result = sendMsg(openId,template_id,jumpurl);
+    ApiResponse sendTemplateMsg(@RequestBody MessageParam messageParam) {
+        String result = sendMsg(messageParam.getOpenId(),messageParam.getTemplate_id(),messageParam.getJumpUrl());
         return ApiResponse.ok(result);
     }
 
