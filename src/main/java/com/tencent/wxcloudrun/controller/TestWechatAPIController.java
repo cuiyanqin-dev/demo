@@ -77,11 +77,11 @@ public class TestWechatAPIController {
 
             Map<String, TemplateData> m = new HashMap<>();
             m.put("first", new TemplateData("设备告警通知（平台测试消息，无需处理）：","#F7A36F"));
-            m.put("keyword1", new TemplateData("192.168.1.12","#79CCE9"));
+            m.put("keyword1", new TemplateData("demo服务器（192.168.1.14）","#79CCE9"));
             m.put("keyword2", new TemplateData("CPU使用率","#79CCE9"));
             m.put("keyword3", new TemplateData(">=90%","#79CCE9"));
             m.put("keyword4", new TemplateData("93","#79CCE9"));
-            m.put("keyword4", new TemplateData(dateString,"#79CCE9"));
+            m.put("keyword5", new TemplateData(dateString,"#79CCE9"));
             m.put("remark", new TemplateData("，请尽快登录系统进行处理！！！","#FF0000"));
             wxTemplate.setData(m);
 
